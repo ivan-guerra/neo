@@ -101,12 +101,12 @@ class ScreenSaver {
      * @brief Scroll the screen down by a single row.
      *
      * @details Update() performs the following actions in sequence:
-     *              (1) Shifts all rows down by one. This effectively deletes
+     *              -# Shifts all rows down by one. This effectively deletes
      *                  the very bottom row and introduces a new, empty top row.
-     *              (2) If a column of characters has not yet met its character
+     *              -# If a column of characters has not yet met its character
      *                  limit, Update() will insert a character at the very top
      *                  of that column.
-     *              (3) Update() will select a random column index and will
+     *              -# Update() will select a random column index and will
      *                  insert a character only if that column is empty.
      */
     void Update();
