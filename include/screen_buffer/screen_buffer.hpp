@@ -20,6 +20,9 @@ class CharStream {
     /**
      * @brief Construct a stream with the parameter capacity and Char limit.
      *
+     * @description Providing invalid \p char_limit and \p capacity values will
+     *              cause undefined behavior.
+     *
      * @param [in] capacity   The max number of combined NULL and non NULL Chars
      *                        supported.
      * @param [in] char_limit The max number of non NULL characters that can be
