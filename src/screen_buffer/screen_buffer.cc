@@ -1,4 +1,4 @@
-#include "screen_saver/screen_saver.hpp"
+#include "screen_buffer/screen_buffer.hpp"
 
 #include <random>
 #include <string>
@@ -49,8 +49,8 @@ void CharStream::RemoveChar() {
     chars_.front() = kNullChar; /* clear first element */
 }
 
-std::size_t ScreenSaver::GetRandomNumInRange(int lower_bound,
-                                             int upper_bound) const {
+std::size_t ScreenBuffer::GetRandomNumInRange(int lower_bound,
+                                              int upper_bound) const {
     std::random_device rd;  /* obtain a random number from hardware */
     std::mt19937 gen(rd()); /* seed the generator */
     std::uniform_int_distribution<> distr(lower_bound,
@@ -58,15 +58,15 @@ std::size_t ScreenSaver::GetRandomNumInRange(int lower_bound,
     return distr(gen);
 }
 
-char ScreenSaver::GetRandomBinDigit() const {
+char ScreenBuffer::GetRandomBinDigit() const {
     static const std::string kBinDigits("01");
     return kBinDigits.at(
         GetRandomNumInRange(0, static_cast<int>(kBinDigits.size()) - 1));
 }
 
-Rgb ScreenSaver::GetColor(std::size_t stream_idx) const {
+Rgb ScreenBuffer::GetColor(std::size_t stream_idx) const {
     using Range = std::pair<int, int>;
-    const Range kCharRange(0, height_ / 2);
+    const Range kCharRange(0, height_);
     const Range kColorRange(0, 255);
 
     int slope = (kColorRange.second - kColorRange.first) /
@@ -78,7 +78,7 @@ Rgb ScreenSaver::GetColor(std::size_t stream_idx) const {
             .blue = 0};
 }
 
-void ScreenSaver::InsertChar(std::size_t stream_idx) {
+void ScreenBuffer::InsertChar(std::size_t stream_idx) {
     Char new_char = {
         .c = GetRandomBinDigit(),
         .color = GetColor(stream_idx),
@@ -86,18 +86,18 @@ void ScreenSaver::InsertChar(std::size_t stream_idx) {
     streams_[stream_idx].InsertChar(new_char);
 }
 
-void ScreenSaver::ScrollScreen() {
+void ScreenBuffer::ScrollScreen() {
     for (std::size_t i = 0; i < streams_.size(); ++i) {
         streams_[i].RemoveChar();
     }
 }
 
-ScreenSaver::ScreenSaver(int width, int height)
+ScreenBuffer::ScreenBuffer(int width, int height)
     : width_(width),
       height_(height),
-      streams_(width, CharStream(height, height / 2)) {}
+      streams_(width, CharStream(height, height)) {}
 
-void ScreenSaver::Update() {
+void ScreenBuffer::Update() {
     ScrollScreen(); /* scroll the screen down a row */
 
     /* insert characters into any non empty streams */
@@ -115,7 +115,7 @@ void ScreenSaver::Update() {
     }
 }
 
-CharBuffer ScreenSaver::GetBuffer() const {
+CharBuffer ScreenBuffer::GetBuffer() const {
     /* transpose streams_ so that we get a vertical scroll effect rather than a
      * horizontal one */
     CharBuffer buffer(height_, std::vector<Char>(width_));

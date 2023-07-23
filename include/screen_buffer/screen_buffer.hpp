@@ -1,5 +1,5 @@
-#ifndef SCREEN_SAVER_HPP_
-#define SCREEN_SAVER_HPP_
+#ifndef SCREEN_BUFFER_HPP_
+#define SCREEN_BUFFER_HPP_
 
 #include <vector>
 
@@ -70,17 +70,14 @@ class CharStream {
 using CharBuffer = std::vector<std::vector<Char>>;
 
 /**
- * @brief A screen buffer like object used to generate screensaver frames.
+ * @brief A vertically scrolling 2D screen buffer.
  *
- * @details ScreenSaver acts as a scrolling buffer. Via the Update()
+ * @details ScreenBuffer acts as a scrolling buffer. Via the Update()
  *          method, a User can scroll streams of characters vertically across
- *          the screen. The characters in the buffer are random, printable ASCII
- *          characters whose RGB color value varies in intensity to produce the
- *          matrix character stream effect. It's up to the User of ScreenSaver
- *          to update and render the contents of the buffer using proper
- *          graphics libraries.
+ *          the screen. It's up to the User of ScreenBuffer to update and
+ *          render the contents of the buffer using proper graphics libraries.
  */
-class ScreenSaver {
+class ScreenBuffer {
    public:
     /**
      * @brief Construct a screen buffer with the parameter dimensions.
@@ -88,14 +85,14 @@ class ScreenSaver {
      * @param [in] width Screen width.
      * @param [in] height Screen height.
      */
-    ScreenSaver(int width, int height);
-    ScreenSaver() = delete;
+    ScreenBuffer(int width, int height);
+    ScreenBuffer() = delete;
 
-    ~ScreenSaver() = default;
-    ScreenSaver(const ScreenSaver&) = default;
-    ScreenSaver& operator=(const ScreenSaver&) = default;
-    ScreenSaver(ScreenSaver&&) = default;
-    ScreenSaver& operator=(ScreenSaver&&) = default;
+    ~ScreenBuffer() = default;
+    ScreenBuffer(const ScreenBuffer&) = default;
+    ScreenBuffer& operator=(const ScreenBuffer&) = default;
+    ScreenBuffer(ScreenBuffer&&) = default;
+    ScreenBuffer& operator=(ScreenBuffer&&) = default;
 
     /**
      * @brief Scroll the screen down by a single row.
