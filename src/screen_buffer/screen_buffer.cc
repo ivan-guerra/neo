@@ -64,25 +64,16 @@ char ScreenBuffer::GetRandomBinDigit() const {
         GetRandomNumInRange(0, static_cast<int>(kBinDigits.size()) - 1));
 }
 
-Rgb ScreenBuffer::GetColor(std::size_t stream_idx) const {
-    using Range = std::pair<int, int>;
-    const Range kCharRange(0, height_);
-    const Range kColorRange(0, 255);
-
-    int slope = (kColorRange.second - kColorRange.first) /
-                (kCharRange.second - kCharRange.first);
-    auto GetRgbComponent = [&slope](int input) { return slope * input; };
-
-    return {.red = 0,
-            .green = GetRgbComponent(streams_[stream_idx].Size()),
-            .blue = 0};
-}
-
 void ScreenBuffer::InsertChar(std::size_t stream_idx) {
     Char new_char = {
         .c = GetRandomBinDigit(),
-        .color = GetColor(stream_idx),
+        .first = false,
     };
+
+    if (streams_[stream_idx].Empty()) { /* is this the first non NULL char */
+        new_char.first = true;
+    }
+
     streams_[stream_idx].InsertChar(new_char);
 }
 

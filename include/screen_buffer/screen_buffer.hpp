@@ -5,20 +5,14 @@
 
 namespace neo {
 
-/** @brief A color in RGB format. */
-struct Rgb {
-    int red = 0;   /**< Red component. */
-    int green = 0; /**< Green component. */
-    int blue = 0;  /**< Blue component. */
-};
-
-/** @brief A printable ASCII character and its color value. */
+/** @brief Representation of an on-screen character. */
 struct Char {
-    char c = '\0'; /**< A printable ASCII character. */
-    Rgb color;     /**< RGB color value. */
+    char c = '\0';      /**< A printable ASCII character. */
+    bool first = false; /**< True if this is the first non NULL Char in a column
+                           of characters. */
 };
 
-/** @brief A collection of Char representing a column of on screen chars. */
+/** @brief Representation of a single screen column. */
 class CharStream {
    public:
     CharStream() = delete;
@@ -26,8 +20,8 @@ class CharStream {
     /**
      * @brief Construct a stream with the parameter capacity and Char limit.
      *
-     * @param [in] capacity The max number of combined NULL and non NULL Chars
-     *                      supported.
+     * @param [in] capacity   The max number of combined NULL and non NULL Chars
+     *                        supported.
      * @param [in] char_limit The max number of non NULL characters that can be
      *                        in the stream at any given time.
      */
@@ -75,14 +69,14 @@ using CharBuffer = std::vector<std::vector<Char>>;
  * @details ScreenBuffer acts as a scrolling buffer. Via the Update()
  *          method, a User can scroll streams of characters vertically across
  *          the screen. It's up to the User of ScreenBuffer to update and
- *          render the contents of the buffer using proper graphics libraries.
+ *          render the contents of the buffer using a graphics library.
  */
 class ScreenBuffer {
    public:
     /**
      * @brief Construct a screen buffer with the parameter dimensions.
      *
-     * @param [in] width Screen width.
+     * @param [in] width  Screen width.
      * @param [in] height Screen height.
      */
     ScreenBuffer(int width, int height);
@@ -114,7 +108,6 @@ class ScreenBuffer {
    private:
     std::size_t GetRandomNumInRange(int lower_bound, int upper_bound) const;
     char GetRandomBinDigit() const;
-    Rgb GetColor(std::size_t stream_idx) const;
     void InsertChar(std::size_t stream_idx);
     void ScrollScreen();
 
