@@ -2,6 +2,9 @@
 
 #include <ncurses.h>
 
+#include <functional>
+#include <random>
+
 namespace neo {
 
 ScreenSaver::ScreenSaver() : buffer_(0, 0) {
@@ -34,6 +37,10 @@ void ScreenSaver::Draw() {
 
     buffer_.Update(); /* refresh the screen buffer */
 
+    /* randomly generate a boolean */
+    auto GetRandBool = std::bind(std::uniform_int_distribution<>(0, 1),
+                                 std::default_random_engine());
+
     auto raw_buffer = buffer_.GetBuffer();
     for (std::size_t i = 0; i < raw_buffer.size(); ++i) {
         for (std::size_t j = 0; j < raw_buffer.front().size(); ++j) {
@@ -45,9 +52,13 @@ void ScreenSaver::Draw() {
                     mvaddch(i, j, raw_buffer[i][j].c);
                     attroff(COLOR_PAIR(Color::kGreen) | A_BOLD);
                 } else {
-                    attron(COLOR_PAIR(Color::kGreen));
+                    /* randomly dim digits */
+                    int attrs = GetRandBool()
+                                    ? COLOR_PAIR(Color::kGreen) | A_DIM
+                                    : COLOR_PAIR(Color::kGreen);
+                    attron(attrs);
                     mvaddch(i, j, raw_buffer[i][j].c);
-                    attroff(COLOR_PAIR(Color::kGreen));
+                    attroff(attrs);
                 }
             }
         }
